@@ -24,6 +24,9 @@ ColumnLayout {
 
     // Countdown to the reset, next to the bar ("45m", "2h", "3d")
     property string resetModus: "off"        // "off" or "outside"
+    property string resetSeite: "right"      // "left" (between text and bar) or "right" (far right)
+    property color resetFarbe: textFarbe
+    property int resetBreiteFest: 0          // fixed width in px, 0 = as wide as the longest countdown shown
     property var resets: ({})                // reset time (Unix seconds) by row key
     property real jetzt: Date.now() / 1000
 
@@ -36,7 +39,15 @@ ColumnLayout {
         if (h < 24) return h + "h";
         return Math.floor(h / 24) + "d";
     }
-    readonly property int resetBreite: Math.ceil(resetMessung.advanceWidth)
+    // Auto: as wide as the countdowns shown right now, so there is no empty gap ("4h" needs less than "59m")
+    readonly property int resetBreiteAuto: {
+        var schrift = resetMessung.font;   // recompute when the font changes
+        var breite = 0;
+        for (var i = 0; i < zeilen.length; i++)
+            breite = Math.max(breite, resetMessung.advanceWidth(countdown(resets[zeilen[i].key] || 0)));
+        return Math.ceil(breite || resetMessung.advanceWidth("0h"));
+    }
+    readonly property int resetBreite: resetBreiteFest > 0 ? resetBreiteFest : resetBreiteAuto
 
     // Gleich breite Schrift (wie beim Programmieren): jedes Zeichen gleich breit, 1 so breit wie 8, H so breit wie W
     property bool gleichBreit: true
@@ -47,12 +58,11 @@ ColumnLayout {
 
     spacing: 3
 
-    TextMetrics {
+    FontMetrics {
         id: resetMessung
         font.pixelSize: anzeige.schriftGroesse
         font.bold: true
         font.family: anzeige.schriftArt
-        text: "59m"
     }
 
     TextMetrics {
@@ -87,6 +97,23 @@ ColumnLayout {
                 Layout.preferredHeight: anzeige.balkenHoehe
                 Layout.maximumHeight: anzeige.balkenHoehe
                 horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            // Countdown to the reset, left between text and bar
+            Text {
+                visible: anzeige.resetModus === "outside" && anzeige.resetSeite === "left"
+                text: anzeige.countdown(anzeige.resets[modelData.key] || 0)
+                color: anzeige.resetFarbe
+                font.pixelSize: anzeige.schriftGroesse
+                font.bold: true
+                font.family: anzeige.schriftArt
+                Layout.preferredWidth: anzeige.resetBreite
+                Layout.minimumWidth: anzeige.resetBreite
+                Layout.maximumWidth: anzeige.resetBreite
+                Layout.preferredHeight: anzeige.balkenHoehe
+                Layout.maximumHeight: anzeige.balkenHoehe
+                horizontalAlignment: Text.AlignRight
                 verticalAlignment: Text.AlignVCenter
             }
 
@@ -145,19 +172,20 @@ ColumnLayout {
                 verticalAlignment: Text.AlignVCenter
             }
 
-            // Countdown to the reset, at the far right
+            // Countdown to the reset, right of the bar
             Text {
-                visible: anzeige.resetModus === "outside"
+                visible: anzeige.resetModus === "outside" && anzeige.resetSeite === "right"
                 text: anzeige.countdown(anzeige.resets[modelData.key] || 0)
-                color: anzeige.textFarbe
+                color: anzeige.resetFarbe
                 font.pixelSize: anzeige.schriftGroesse
                 font.bold: true
                 font.family: anzeige.schriftArt
                 Layout.preferredWidth: anzeige.resetBreite
                 Layout.minimumWidth: anzeige.resetBreite
+                Layout.maximumWidth: anzeige.resetBreite
                 Layout.preferredHeight: anzeige.balkenHoehe
                 Layout.maximumHeight: anzeige.balkenHoehe
-                horizontalAlignment: Text.AlignRight
+                horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
             }
         }

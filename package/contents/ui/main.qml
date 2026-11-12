@@ -73,6 +73,10 @@ PlasmoidItem {
             prozentGroesse: root.cfg.percentFontSize
             gleichBreit: root.cfg.monoFont
             resetModus: root.cfg.resetMode
+            resetSeite: root.cfg.resetSide
+            resetBreiteFest: root.cfg.resetWidth
+            // Empty means: same color as the text
+            resetFarbe: root.farbe(root.cfg.resetColor, textFarbe)
         }
     }
 }

@@ -22,7 +22,7 @@ ApplicationWindow {
                 { form: "round", prozent: "inside", seite: "right", reset: "off", mono: true },
                 { form: "round", prozent: "outside", seite: "left", reset: "outside", mono: true },
                 { form: "square", prozent: "outside", seite: "right", reset: "off", mono: false },
-                { form: "mixed", prozent: "inside", seite: "left", reset: "outside", mono: true },
+                { form: "mixed", prozent: "inside", seite: "right", reset: "outside", resetSeite: "left", resetFarbe: "#cacaca", mono: true },
                 { form: "round", prozent: "off", seite: "right", reset: "outside", mono: true, extra: true }
             ]
             delegate: Item {
@@ -46,6 +46,8 @@ ApplicationWindow {
                     prozentSeite: modelData.seite
                     prozentFarbe: modelData.prozent === "inside" ? "#FFFFFF" : "#D97757"
                     resetModus: modelData.reset
+                    resetSeite: modelData.resetSeite || "right"
+                    resetFarbe: modelData.resetFarbe || "#D97757"
                     gleichBreit: modelData.mono
                 }
             }

@@ -14,7 +14,7 @@ Unofficial: your Claude Code 5-hour and weekly usage limits as small bars in the
 Shows your Claude Code usage limits as bars in the panel: the 5-hour limit and the weekly limit.
 
 - Percentage inside or next to the bar, with or without %
-- Countdown to the next reset (45m, 2h, 3d), exact time in the tooltip
+- Countdown to the next reset (45m, 2h, 3d), left or right, own color, exact time in the tooltip
 - Bars drop to 0 by themselves when a limit resets
 - Extra limits (e.g. a spend limit) appear on their own while Claude Code reports them
 - Palette and color picker, round/square/mixed ends, monospace font, sizes and spacing
@@ -30,11 +30,16 @@ Source and issues: https://github.com/mat-53/claude-usage-bars
 
 **License:** MIT
 
-**Version:** 1.0.0
+**Version:** 1.1.0
+
+**Changelog (1.1.0):**
+- Countdown: choose the side (left between text and bar, or right) and its own color
+- Countdown width: automatic (as wide as the text shown, no empty gap) or a fixed width in px
+- Label width can go down to 1 px
 
 **Changelog (1.0.0):** First release.
 
-**File:** dist/claude-usage-bars-1.0.0.plasmoid (made with ./build.sh)
+**File:** dist/claude-usage-bars-1.1.0.plasmoid (made with ./build.sh)
 
 **Logo:** screenshots/logo.png
 

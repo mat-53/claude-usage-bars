@@ -12,7 +12,7 @@
         "Id": "com.github.mat-53.claude-usage-bars",
         "License": "MIT",
         "Name": "Claude Usage Bars",
-        "Version": "1.0.0",
+        "Version": "1.1.0",
         "Website": "https://github.com/mat-53/claude-usage-bars"
     },
     "KPackageStructure": "Plasma/Applet",

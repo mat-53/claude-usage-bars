@@ -51,6 +51,8 @@ var de = {
     "Bar height:": "Balkenhöhe:",
     "Space between rows:": "Abstand zwischen den Zeilen:",
     "Label width:": "Breite der Beschriftung:",
+    "Width:": "Breite:",
+    "Automatic": "Automatisch",
     "Orange (default)": "Orange (Standard)",
     "Blue": "Blau",
     "Green": "Grün",

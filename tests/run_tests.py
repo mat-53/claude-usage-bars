@@ -165,7 +165,7 @@ click("verbinden")
 check("disconnect removes it", wait_for(lambda: page.property("verbindung") == "missing"), page.property("verbindung"))
 
 # Colors
-check("palette circles", qml("anzahlPraefix", "farbe:") == 24, qml("anzahlPraefix", "farbe:"))
+check("palette circles", qml("anzahlPraefix", "farbe:") == 30, qml("anzahlPraefix", "farbe:"))
 click("farbe:#3B82F6", 0)
 check("bar color blue", page.property("cfg_barColor") == "#3B82F6", page.property("cfg_barColor"))
 click("farbe:#22C55E", 1)
@@ -208,6 +208,36 @@ click("wahl:off", -1)
 check("countdown off", page.property("cfg_resetMode") == "off", page.property("cfg_resetMode"))
 click("wahl:outside", -1)
 check("countdown on", page.property("cfg_resetMode") == "outside", page.property("cfg_resetMode"))
+# Countdown side and color: the last "left"/"right" pair and the fifth color row
+check("countdown color follows the text color while unset", qml("wert", "vorschau", 0, "resetFarbe") ==
+      qml("wert", "vorschau", 0, "textFarbe"), qml("wert", "vorschau", 0, "resetFarbe"))
+click("wahl:left", -1)
+check("countdown left", page.property("cfg_resetSide") == "left", page.property("cfg_resetSide"))
+check("percent side unchanged", page.property("cfg_percentSide") == "left", page.property("cfg_percentSide"))
+click("farbe:#3B82F6", 4)
+check("countdown color blue", page.property("cfg_resetColor") == "#3B82F6", page.property("cfg_resetColor"))
+check("text color unchanged", page.property("cfg_textColor") == "#FFFFFF", page.property("cfg_textColor"))
+click("wahl:right", -1)
+check("countdown right", page.property("cfg_resetSide") == "right", page.property("cfg_resetSide"))
+auto_width = qml("wert", "vorschau", 0, "resetBreite")
+# The preview shows "2h" and "3d": the automatic width is two characters, not "59m"
+check("auto width fits the shown countdowns", 0 < auto_width < qml("wert", "vorschau", 0, "schriftGroesse") * 1.6,
+      auto_width)
+check("Automatic is ticked by default", qml("wert", "resetBreiteAuto", 0, "checked") is True)
+check("width field starts at the automatic width", qml("wert", "resetBreite", 0, "value") == auto_width,
+      qml("wert", "resetBreite", 0, "value"))
+QTest.mouseClick(win, Qt.LeftButton, Qt.NoModifier, spot("resetBreite", 0, False, 0.97, 0.75))
+QTest.qWait(300)
+check("arrow down makes it narrower than auto", page.property("cfg_resetWidth") == auto_width - 1,
+      page.property("cfg_resetWidth"))
+check("Automatic is unticked after a change", qml("wert", "resetBreiteAuto", 0, "checked") is False)
+check("preview uses the fixed width", qml("wert", "vorschau", 0, "resetBreite") == auto_width - 1)
+click("resetBreiteAuto")
+check("ticking Automatic goes back to auto", page.property("cfg_resetWidth") == 0 and
+      qml("wert", "vorschau", 0, "resetBreite") == auto_width, page.property("cfg_resetWidth"))
+click("wahl:off", -1)
+check("countdown side is greyed out while off", qml("wert", "wahl:left", -1, "enabled") is False)
+click("wahl:outside", -1)
 
 # Rows
 click("hinzufuegen")

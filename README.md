@@ -10,7 +10,7 @@ A small KDE Plasma 6 panel widget that shows your **Claude Code usage limits** a
 
 - One bar per limit, stacked like Plasma's disk usage widget
 - Percentage inside the bar or next to it, with or without `%`
-- Countdown to the reset next to the bar (`45m`, `2h`, `3d`). Hover over the widget for the exact time.
+- Countdown to the reset (`45m`, `2h`, `3d`), left or right of the bar, in its own color. Hover over the widget for the exact time.
 - Bars drop to 0 by themselves when a limit resets, even while Claude Code is closed
 - Extra limits (for example a spend limit) show up on their own while Claude Code reports them, and disappear again
 - Colors with a palette and a color picker, round, square or mixed bar ends, monospace font, sizes and spacing

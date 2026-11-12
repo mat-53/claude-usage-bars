@@ -71,5 +71,8 @@ ApplicationWindow {
         cfg_language: "en"
         cfg_resetMode: "outside"
         cfg_autoExtra: true
+        cfg_resetSide: "right"
+        cfg_resetColor: ""
+        cfg_resetWidth: 0
     }
 }

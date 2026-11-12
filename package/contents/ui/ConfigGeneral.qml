@@ -29,6 +29,9 @@ KCM.SimpleKCM {
     property string cfg_language
     property string cfg_resetMode
     property bool cfg_autoExtra
+    property string cfg_resetSide
+    property string cfg_resetColor
+    property int cfg_resetWidth
 
     function t(text) {
         return Texte.t(text, cfg_language);
@@ -154,6 +157,7 @@ KCM.SimpleKCM {
 
                 Anzeige {
                     id: vorschau
+                    objectName: "vorschau"
                     x: 16
                     y: 12
                     width: seite.cfg_widgetWidth
@@ -176,6 +180,9 @@ KCM.SimpleKCM {
                     prozentGroesse: seite.cfg_percentFontSize
                     gleichBreit: seite.cfg_monoFont
                     resetModus: seite.cfg_resetMode
+                    resetSeite: seite.cfg_resetSide
+                    resetBreiteFest: seite.cfg_resetWidth
+                    resetFarbe: seite.farbeOder(seite.cfg_resetColor, vorschau.textFarbe)
                     jetzt: seite.jetzt
                     resets: ({ "five": seite.jetzt + 2 * 3600 + 600, "week": seite.jetzt + 3 * 86400 })
                 }
@@ -449,6 +456,46 @@ KCM.SimpleKCM {
             wert: seite.cfg_resetMode
             onGewaehlt: wert => seite.cfg_resetMode = wert
         }
+        AuswahlReihe {
+            sprache: seite.cfg_language
+            Kirigami.FormData.label: seite.t("Side:")
+            enabled: seite.cfg_resetMode !== "off"
+            optionen: [
+                { name: "Left (between text and bar)", wert: "left" },
+                { name: "Right", wert: "right" }
+            ]
+            wert: seite.cfg_resetSide
+            onGewaehlt: wert => seite.cfg_resetSide = wert
+        }
+        Farbreihe {
+            Kirigami.FormData.label: seite.t("Color:")
+            enabled: seite.cfg_resetMode !== "off"
+            sprache: seite.cfg_language
+            farben: seite.farbListe
+            // Empty means: same color as the text
+            wert: seite.cfg_resetColor || seite.cfg_textColor
+            onGewaehlt: farbe => seite.cfg_resetColor = farbe
+        }
+        RowLayout {
+            Kirigami.FormData.label: seite.t("Width:")
+            enabled: seite.cfg_resetMode !== "off"
+            spacing: Kirigami.Units.largeSpacing
+
+            // Shows the automatic width too, so the arrows start from there
+            PxFeld {
+                objectName: "resetBreite"
+                from: 1
+                to: 60
+                value: seite.cfg_resetWidth > 0 ? seite.cfg_resetWidth : vorschau.resetBreiteAuto
+                onValueModified: seite.cfg_resetWidth = value
+            }
+            CheckBox {
+                objectName: "resetBreiteAuto"
+                text: seite.t("Automatic")
+                checked: seite.cfg_resetWidth === 0
+                onToggled: seite.cfg_resetWidth = checked ? 0 : vorschau.resetBreiteAuto
+            }
+        }
         Label {
             Layout.maximumWidth: Kirigami.Units.gridUnit * 22
             wrapMode: Text.WordWrap
@@ -508,7 +555,7 @@ KCM.SimpleKCM {
         }
         PxFeld {
             Kirigami.FormData.label: seite.t("Label width:")
-            from: 8
+            from: 1
             to: 40
             value: seite.cfg_labelWidth
             onValueModified: seite.cfg_labelWidth = value

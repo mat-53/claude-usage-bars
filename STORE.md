@@ -36,4 +36,6 @@ Source and issues: https://github.com/mat-53/claude-usage-bars
 
 **File:** dist/claude-usage-bars-1.0.0.plasmoid (made with ./build.sh)
 
+**Logo:** screenshots/logo.png
+
 **Screenshots:** screenshots/variants.png, screenshots/settings-en.png, screenshots/color-picker.png

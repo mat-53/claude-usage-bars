@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Status line helper that feeds the Claude Usage Bars widget.
+
+Claude Code runs this as its "statusLine" command and passes the session data as JSON on stdin.
+The script saves the 5-hour and weekly usage to ~/.local/state/claude-limits.json, which the
+Plasma widget reads.
+
+It prints nothing, so no status line appears in Claude Code. If you already had a status line,
+its command is passed as arguments and its output is shown as before:
+
+    claude-usage-bars-statusline sh -c 'your-old-status-line-command'
+"""
+import json
+import os
+import subprocess
+import sys
+
+STATE_DIR = os.environ.get("XDG_STATE_HOME") or os.path.expanduser("~/.local/state")
+TARGET = os.path.join(STATE_DIR, "claude-limits.json")
+
+
+def percent(limits, name):
+    value = (limits.get(name) or {}).get("used_percentage")
+    return round(value) if isinstance(value, (int, float)) else None
+
+
+def all_limits(limits):
+    # Every window Claude Code reports (five_hour, seven_day, spend_limit, and any it adds later)
+    result = {}
+    for name, entry in limits.items():
+        if isinstance(entry, dict) and isinstance(entry.get("used_percentage"), (int, float)):
+            result[name] = {"pct": round(entry["used_percentage"]), "resets_at": entry.get("resets_at")}
+    return result
+
+
+def main():
+    raw = sys.stdin.buffer.read()
+    try:
+        data = json.loads(raw)
+    except ValueError:
+        data = {}
+
+    # rate_limits is only sent for Claude.ai subscriptions (Pro/Max), not for API keys
+    limits = data.get("rate_limits") or {} if isinstance(data, dict) else {}
+    five, week = percent(limits, "five_hour"), percent(limits, "seven_day")
+    if five is not None or week is not None or all_limits(limits):
+        os.makedirs(STATE_DIR, exist_ok=True)
+        # Write to a temp file first, so the widget never reads a half-written file
+        with open(TARGET + ".tmp", "w") as f:
+            json.dump({"five": five or 0, "week": week or 0, "limits": all_limits(limits)}, f)
+        os.replace(TARGET + ".tmp", TARGET)
+
+    # Pass everything on to an existing status line, if there is one
+    if len(sys.argv) > 1:
+        result = subprocess.run(sys.argv[1:], input=raw, stdout=subprocess.PIPE)
+        sys.stdout.buffer.write(result.stdout)
+
+
+if __name__ == "__main__":
+    main()

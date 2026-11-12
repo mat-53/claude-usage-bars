@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "mat-53"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Unofficial. Shows your Claude Code 5-hour and weekly usage limits as small bars in the panel.",
+        "Description[de]": "Inoffiziell. Zeigt das 5-Stunden- und das Wochenlimit von Claude Code als kleine Balken in der Taskleiste.",
+        "Icon": "office-chart-bar",
+        "Id": "com.github.mat-53.claude-usage-bars",
+        "License": "MIT",
+        "Name": "Claude Usage Bars",
+        "Version": "1.0.0",
+        "Website": "https://github.com/mat-53/claude-usage-bars"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
